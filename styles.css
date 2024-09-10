@@ -116,3 +116,57 @@ nav ul li a {
 .button:hover {
     background-color: #ff3385;
 }
+
+/* Walk List Styling */
+#walk-list {
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+}
+
+.walk-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f9f9f9;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.walk-item h3 {
+    margin: 0;
+}
+
+.walk-actions button {
+    background-color: #ff66b2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.walk-actions button:hover {
+    background-color: #ff3385;
+}
+
+/* Comparison Section Styling */
+#walk-comparison {
+    background-color: #ffe6f2;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#compare-results {
+    display: flex;
+    flex-direction: column;
+}
+
+.comparison-item {
+    margin-bottom: 10px;
+}
