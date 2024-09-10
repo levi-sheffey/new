@@ -188,3 +188,71 @@ function showError(error) {
             break;
     }
 }
+
+// Authentication Modal Elements
+const authModal = document.getElementById('auth-modal');
+const authContainer = document.getElementById('auth-container');
+const authTitle = document.getElementById('auth-title');
+const authEmail = document.getElementById('auth-email');
+const authPassword = document.getElementById('auth-password');
+const authSubmitBtn = document.getElementById('auth-submit-btn');
+const closeAuth = document.getElementById('close-auth');
+
+// Show Login Modal
+document.getElementById('login-btn').addEventListener('click', () => {
+    authTitle.innerText = 'Login';
+    authSubmitBtn.innerText = 'Login';
+    authModal.classList.add('show');
+});
+
+// Show Sign Up Modal
+document.getElementById('signup-btn').addEventListener('click', () => {
+    authTitle.innerText = 'Sign Up';
+    authSubmitBtn.innerText = 'Sign Up';
+    authModal.classList.add('show');
+});
+
+// Close Modal
+closeAuth.addEventListener('click', () => {
+    authModal.classList.remove('show');
+});
+
+// Handle Authentication Submit
+authSubmitBtn.addEventListener('click', () => {
+    const email = authEmail.value;
+    const password = authPassword.value;
+
+    if (authTitle.innerText === 'Login') {
+        // Login User
+        loginUser(email, password);
+    } else {
+        // Sign Up User
+        signUpUser(email, password);
+    }
+
+    // Clear inputs and close modal
+    authEmail.value = '';
+    authPassword.value = '';
+    authModal.classList.remove('show');
+});
+
+// Authentication Functions
+function signUpUser(email, password) {
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            alert(`Welcome ${userCredential.user.email}, your account has been created!`);
+        })
+        .catch((error) => {
+            alert(error.message);
+        });
+}
+
+function loginUser(email, password) {
+    firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            alert(`Welcome back ${userCredential.user.email}`);
+        })
+        .catch((error) => {
+            alert(error.message);
+        });
+}
