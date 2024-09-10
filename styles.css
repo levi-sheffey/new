@@ -7,11 +7,13 @@ body {
     color: #333;
 }
 
+/* Header Styling */
 header {
     background-color: #ff66b2;
     color: white;
     padding: 20px;
     text-align: center;
+    position: relative;
 }
 
 header h1 {
@@ -19,11 +21,50 @@ header h1 {
     font-size: 2em;
 }
 
+/* Header Left Section (Logo) */
+.header-left {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.top-left-logo {
+    width: 80px;
+    height: auto;
+}
+
+/* Header Left Below Logo: Auth Buttons */
+.header-left-buttons {
+    position: absolute;
+    top: 100px; /* Adjust this value to position buttons below the logo */
+    left: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-btn {
+    background-color: #ff66b2;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    margin: 5px 0;
+    transition: background-color 0.3s ease;
+}
+
+.auth-btn:hover {
+    background-color: #ff3385;
+}
+
+/* Navigation Styling */
 nav ul {
     list-style: none;
     padding: 0;
     display: flex;
     justify-content: center;
+    margin-top: 10px;
 }
 
 nav ul li {
@@ -192,16 +233,6 @@ nav ul li a {
     background-color: #ff3385;
 }
 
-/* Style for Top Left Logo (Hot Girls Walk Logo) */
-.top-left-logo {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 80px;
-    height: auto;
-    z-index: 10;
-}
-
 /* Style for Sneakers Image Under the Buttons */
 .image-section {
     text-align: center;
@@ -213,4 +244,64 @@ nav ul li a {
     height: auto;
     margin-top: 20px;
     border-radius: 10px;
+}
+
+/* Authentication Modal Styling */
+#auth-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+#auth-modal.show {
+    display: flex;
+}
+
+#auth-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    position: relative;
+    text-align: center;
+}
+
+#auth-container h2 {
+    margin-top: 0;
+}
+
+#auth-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#auth-submit-btn {
+    background-color: #ff66b2;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#auth-submit-btn:hover {
+    background-color: #ff3385;
+}
+
+#close-auth {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
 }
