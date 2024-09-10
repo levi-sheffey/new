@@ -133,3 +133,27 @@ function showError(error) {
             break;
     }
 }
+
+// When ending the walk
+endWalkBtn.addEventListener('click', () => {
+    isWalking = false;
+    clearInterval(walkInterval); // Stop the timer
+
+    // Save walk data to localStorage
+    const newWalk = {
+        date: new Date().toLocaleDateString(),
+        distance: totalDistance.toFixed(2),
+        time: walkTimeElement.innerText,
+        route: route
+    };
+
+    // Retrieve existing walks from localStorage or create a new array
+    let savedWalks = JSON.parse(localStorage.getItem('savedWalks')) || [];
+    savedWalks.push(newWalk); // Add the new walk
+
+    // Save updated walk list back to localStorage
+    localStorage.setItem('savedWalks', JSON.stringify(savedWalks));
+
+    // Redirect to the summary page
+    window.location.href = 'end-walk.html';
+});
