@@ -24,12 +24,75 @@
     <script>
       // Your web app's Firebase configuration
       const firebaseConfig = {
-        // ... (your Firebase config)
+        apiKey: "AIzaSyDUs2rK53_zDUjHWYVc0OrcY46TOR0Z2P8",
+        authDomain: "hot-girl-walks-4b782.firebaseapp.com",
+        projectId: "hot-girl-walks-4b782",
+        storageBucket: "hot-girl-walks-4b782.appspot.com",
+        messagingSenderId: "971642614859",
+        appId: "1:971642614859:web:3f7ebb00b73a40b55a49ce",
+        measurementId: "G-0JW2D3205F"
       };
 
       // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
       firebase.analytics();
+
+      // Firebase Authentication Functions
+      const auth = firebase.auth();
+
+      function showAuthModal(authType) {
+        document.getElementById('auth-modal').classList.add('show');
+        document.getElementById('auth-title').innerText = authType === 'login' ? 'Login' : 'Sign Up';
+        document.getElementById('auth-submit-btn').setAttribute('data-auth-type', authType);
+      }
+
+      function closeAuthModal() {
+        document.getElementById('auth-modal').classList.remove('show');
+      }
+
+      function handleAuthAction() {
+        const authType = document.getElementById('auth-submit-btn').getAttribute('data-auth-type');
+        const email = document.getElementById('auth-email').value;
+        const password = document.getElementById('auth-password').value;
+
+        if (authType === 'signup') {
+          auth.createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+              alert('User signed up: ' + userCredential.user.email);
+              closeAuthModal();
+            })
+            .catch((error) => {
+              alert(error.message);
+            });
+        } else if (authType === 'login') {
+          auth.signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+              alert('Logged in: ' + userCredential.user.email);
+              closeAuthModal();
+            })
+            .catch((error) => {
+              alert(error.message);
+            });
+        }
+      }
+
+      function logoutUser() {
+        auth.signOut()
+          .then(() => {
+            alert('User logged out');
+          })
+          .catch((error) => {
+            alert(error.message);
+          });
+      }
+
+      // Event Listeners for Authentication
+      document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('login-btn').addEventListener('click', () => showAuthModal('login'));
+        document.getElementById('signup-btn').addEventListener('click', () => showAuthModal('signup'));
+        document.getElementById('close-auth').addEventListener('click', closeAuthModal);
+        document.getElementById('auth-submit-btn').addEventListener('click', handleAuthAction);
+      });
     </script>
 </head>
 <body>
@@ -92,7 +155,7 @@
             <h2 id="auth-title">Login</h2>
             <input type="email" id="auth-email" placeholder="Email">
             <input type="password" id="auth-password" placeholder="Password">
-            <button id="auth-submit-btn">Submit</button>
+            <button id="auth-submit-btn" data-auth-type="login">Submit</button>
         </div>
     </div>
 
