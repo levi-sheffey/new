@@ -107,7 +107,20 @@ endWalkBtn.addEventListener('click', () => {
     isWalking = false;  // Stop the walking state
     clearInterval(walkInterval);  // Stop the timer
 
-    // Save the walk details (distance, time, and route) to localStorage
+    // Save walk data to localStorage
+    const newWalk = {
+        date: new Date().toLocaleDateString(),
+        distance: totalDistance.toFixed(2),
+        time: walkTimeElement.innerText,
+        route: route
+    };
+
+    // Retrieve existing walks from localStorage or create a new array
+    let savedWalks = JSON.parse(localStorage.getItem('savedWalks')) || [];
+    savedWalks.push(newWalk); // Add the new walk
+
+    // Save updated walk list back to localStorage
+    localStorage.setItem('savedWalks', JSON.stringify(savedWalks));
     localStorage.setItem('totalDistance', totalDistance.toFixed(2));  // Save the total distance (formatted to 2 decimal places)
     localStorage.setItem('totalTime', walkTimeElement.innerText);  // Save the total time as a string (e.g., "00:45:30")
     localStorage.setItem('walkRoute', JSON.stringify(route));  // Save the route as a JSON string
@@ -133,27 +146,3 @@ function showError(error) {
             break;
     }
 }
-
-// When ending the walk
-endWalkBtn.addEventListener('click', () => {
-    isWalking = false;
-    clearInterval(walkInterval); // Stop the timer
-
-    // Save walk data to localStorage
-    const newWalk = {
-        date: new Date().toLocaleDateString(),
-        distance: totalDistance.toFixed(2),
-        time: walkTimeElement.innerText,
-        route: route
-    };
-
-    // Retrieve existing walks from localStorage or create a new array
-    let savedWalks = JSON.parse(localStorage.getItem('savedWalks')) || [];
-    savedWalks.push(newWalk); // Add the new walk
-
-    // Save updated walk list back to localStorage
-    localStorage.setItem('savedWalks', JSON.stringify(savedWalks));
-
-    // Redirect to the summary page
-    window.location.href = 'end-walk.html';
-});
