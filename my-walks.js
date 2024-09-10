@@ -30,7 +30,7 @@ function displayWalks(walks) {
             </div>
         `;
 
-        walkList.appendChild(wwalkItem);
+        walkList.appendChild(walkItem);
     });
 
     // Attach event listeners to the buttons
@@ -56,6 +56,18 @@ function attachEventListeners() {
 function viewWalkRoute(event) {
     const walkIndex = event.target.getAttribute('data-index');
     const walk = savedWalks[walkIndex];
+
+    // Check if a map already exists, if so, remove it
+    const mapContainer = document.getElementById('map');
+    if (mapContainer) {
+        mapContainer.remove();  // Remove the old map container
+    }
+
+    // Create a new map container
+    const newMap = document.createElement('div');
+    newMap.id = 'map';
+    newMap.style.height = '400px';
+    walkList.appendChild(newMap);
 
     // Initialize and show map with the walk route
     const map = L.map('map').setView(walk.route[0], 13);
