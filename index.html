@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Meta and Title -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hot Girl Activities - Home</title>
@@ -9,108 +8,24 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    
+
     <!-- Firebase SDKs -->
-    <!-- Firebase App (the core Firebase SDK) -->
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
-    <!-- Firebase Analytics SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-analytics.js"></script>
-    <!-- Firebase Authentication -->
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth.js"></script>
-
-    <!-- Initialize Firebase -->
-    <script>
-      const firebaseConfig = {
-        apiKey: "AIzaSyDUs2rK53_zDUjHWYVc0OrcY46TOR0Z2P8",
-        authDomain: "hot-girl-walks-4b782.firebaseapp.com",
-        projectId: "hot-girl-walks-4b782",
-        storageBucket: "hot-girl-walks-4b782.appspot.com",
-        messagingSenderId: "971642614859",
-        appId: "1:971642614859:web:3f7ebb00b73a40b55a49ce",
-        measurementId: "G-0JW2D3205F"
-      };
-
-      // Initialize Firebase
-      firebase.initializeApp(firebaseConfig);
-      firebase.analytics();
-
-      // Firebase Authentication Functions
-      const auth = firebase.auth();
-
-      function showAuthModal(authType) {
-        document.getElementById('auth-modal').classList.add('show');
-        document.getElementById('auth-title').innerText = authType === 'login' ? 'Login' : 'Sign Up';
-        document.getElementById('auth-submit-btn').setAttribute('data-auth-type', authType);
-      }
-
-      function closeAuthModal() {
-        document.getElementById('auth-modal').classList.remove('show');
-      }
-
-      function handleAuthAction() {
-        const authType = document.getElementById('auth-submit-btn').getAttribute('data-auth-type');
-        const email = document.getElementById('auth-email').value;
-        const password = document.getElementById('auth-password').value;
-
-        if (authType === 'signup') {
-          auth.createUserWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-              alert('User signed up: ' + userCredential.user.email);
-              closeAuthModal();
-            })
-            .catch((error) => {
-              alert(error.message);
-            });
-        } else if (authType === 'login') {
-          auth.signInWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-              alert('Logged in: ' + userCredential.user.email);
-              closeAuthModal();
-            })
-            .catch((error) => {
-              alert(error.message);
-            });
-        }
-      }
-
-      function logoutUser() {
-        auth.signOut()
-          .then(() => {
-            alert('User logged out');
-          })
-          .catch((error) => {
-            alert(error.message);
-          });
-      }
-
-      // Event Listeners for Authentication
-      document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('login-btn').addEventListener('click', () => showAuthModal('login'));
-        document.getElementById('signup-btn').addEventListener('click', () => showAuthModal('signup'));
-        document.getElementById('close-auth').addEventListener('click', closeAuthModal);
-        document.getElementById('auth-submit-btn').addEventListener('click', handleAuthAction);
-      });
-    </script>
 </head>
 <body>
 
     <!-- Header Section with Logo and Auth Buttons -->
     <header>
-        <!-- Top Left: Logo -->
         <div class="header-left">
             <img src="assets/images/Hot-Girls-Walk-logo.webp" alt="Hot Girls Walk Logo" class="top-left-logo">
         </div>
-
-        <!-- Top Left Below Logo: Auth Buttons -->
         <div class="header-left-buttons">
             <button class="auth-btn" id="login-btn">Login</button>
             <button class="auth-btn" id="signup-btn">Sign Up</button>
         </div>
-
-        <!-- Main Title -->
         <h1>Hot Girl Activities</h1>
-
-        <!-- Navigation -->
         <nav>
             <ul>
                 <li><a href="index.html">Home</a></li>
@@ -156,9 +71,73 @@
         </div>
     </div>
 
-    <!-- JavaScript Files -->
+    <!-- JavaScript (moved to bottom for better loading) -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="scripts.js"></script>
+    <script>
+      // Firebase Configuration and Initialization
+      const firebaseConfig = {
+        apiKey: "AIzaSyDUs2rK53_zDUjHWYVc0OrcY46TOR0Z2P8",
+        authDomain: "hot-girl-walks-4b782.firebaseapp.com",
+        projectId: "hot-girl-walks-4b782",
+        storageBucket: "hot-girl-walks-4b782.appspot.com",
+        messagingSenderId: "971642614859",
+        appId: "1:971642614859:web:3f7ebb00b73a40b55a49ce",
+        measurementId: "G-0JW2D3205F"
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+
+      const auth = firebase.auth();
+
+      // Show modal based on action type
+      function showAuthModal(authType) {
+        document.getElementById('auth-modal').classList.add('show');
+        document.getElementById('auth-title').innerText = authType === 'login' ? 'Login' : 'Sign Up';
+        document.getElementById('auth-submit-btn').setAttribute('data-auth-type', authType);
+      }
+
+      // Close modal
+      function closeAuthModal() {
+        document.getElementById('auth-modal').classList.remove('show');
+      }
+
+      // Handle authentication action (login/signup)
+      function handleAuthAction() {
+        const authType = document.getElementById('auth-submit-btn').getAttribute('data-auth-type');
+        const email = document.getElementById('auth-email').value;
+        const password = document.getElementById('auth-password').value;
+
+        if (authType === 'signup') {
+          auth.createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+              alert('User signed up: ' + userCredential.user.email);
+              closeAuthModal();
+            })
+            .catch((error) => {
+              alert(error.message);
+            });
+        } else if (authType === 'login') {
+          auth.signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+              alert('Logged in: ' + userCredential.user.email);
+              closeAuthModal();
+            })
+            .catch((error) => {
+              alert(error.message);
+            });
+        }
+      }
+
+      // Event Listeners
+      document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('login-btn').addEventListener('click', () => showAuthModal('login'));
+        document.getElementById('signup-btn').addEventListener('click', () => showAuthModal('signup'));
+        document.getElementById('close-auth').addEventListener('click', closeAuthModal);
+        document.getElementById('auth-submit-btn').addEventListener('click', handleAuthAction);
+      });
+    </script>
 
 </body>
 </html>
