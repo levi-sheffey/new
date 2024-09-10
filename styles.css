@@ -191,3 +191,48 @@ nav ul li a {
 .home-button:hover {
     background-color: #ff3385;
 }
+
+/* Style for Top Left Logo (Heart Image) */
+.top-left-logo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 80px;
+    height: auto;
+    z-index: 10;
+}
+
+/* Walk Type Buttons Section */
+.walk-type-container {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.walk-type-btn {
+    background-color: #ff66b2;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    cursor: pointer;
+    margin: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.walk-type-btn:hover {
+    background-color: #ff3385;
+}
+
+/* Style for Sneakers Image Under the Buttons */
+.image-section {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.walk-logo-image {
+    width: 250px;
+    height: auto;
+    margin-top: 20px;
+    border-radius: 10px;
+}
