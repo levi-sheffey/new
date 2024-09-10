@@ -1,0 +1,59 @@
+/* Walk Type Container */
+.walk-type-container {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.walk-type-container h2 {
+    font-size: 2em;
+    margin-bottom: 30px;
+    color: #ff3385;
+}
+
+.walk-type-btn {
+    background-color: #ff66b2;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    cursor: pointer;
+    margin: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.walk-type-btn:hover {
+    background-color: #ff3385;
+}
+
+/* Map and Walk Info */
+#map {
+    height: 400px;
+    width: 100%;
+    margin: 20px 0;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#walk-details {
+    text-align: center;
+    margin: 20px;
+}
+
+#end-walk-btn {
+    background-color: #ff66b2;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+#end-walk-btn:hover {
+    background-color: #ff3385;
+}
+
+.hidden {
+    display: none;
+}
