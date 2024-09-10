@@ -127,3 +127,32 @@ function showError(error) {
             break;
     }
 }
+
+/* Walk Summary */
+#walk-summary {
+    text-align: center;
+    margin: 20px;
+    font-size: 1.5em;
+}
+
+#map {
+    height: 400px;
+    width: 100%;
+    margin: 20px 0;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ff66b2;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 1.2em;
+}
+
+.button:hover {
+    background-color: #ff3385;
+}
