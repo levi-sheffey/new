@@ -81,3 +81,12 @@
 
 </body>
 </html>
+
+<!-- Sign-Up and Login Forms -->
+<div id="auth-section">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="signUpUser(document.getElementById('email').value, document.getElementById('password').value)">Sign Up</button>
+    <button onclick="loginUser(document.getElementById('email').value, document.getElementById('password').value)">Login</button>
+    <button onclick="logoutUser()">Logout</button>
+</div>
