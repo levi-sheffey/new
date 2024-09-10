@@ -1,3 +1,9 @@
+// Firebase SDKs already initialized in index.html
+
+// Initialize Firestore and Auth
+const db = firebase.firestore();
+const auth = firebase.auth();
+
 // Variables to track the walk state
 let isWalking = false;
 let startTime, walkInterval;
@@ -102,31 +108,67 @@ function toRad(deg) {
     return deg * Math.PI / 180;
 }
 
+// Sign-up functionality
+function signUpUser(email, password) {
+    auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            alert(`Welcome ${user.email}, your account has been created!`);
+        })
+        .catch((error) => {
+            console.error(error.message);
+        });
+}
+
+// Log-in functionality
+function loginUser(email, password) {
+    auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            alert(`Welcome back ${user.email}`);
+        })
+        .catch((error) => {
+            console.error(error.message);
+        });
+}
+
+// Log-out functionality
+function logoutUser() {
+    auth.signOut().then(() => {
+        alert('You have been logged out.');
+    }).catch((error) => {
+        console.error(error.message);
+    });
+}
+
+// Function to save walk to Firestore
+function saveWalkToFirestore(userId, distance, time, route) {
+    db.collection('walks').add({
+        userId: userId,
+        distance: distance,
+        time: time,
+        route: route,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        alert('Walk saved successfully!');
+    }).catch((error) => {
+        console.error('Error saving walk: ', error);
+    });
+}
+
 // Function to stop tracking the walk and finalize the route
 endWalkBtn.addEventListener('click', () => {
     isWalking = false;  // Stop the walking state
     clearInterval(walkInterval);  // Stop the timer
 
-    // Save walk data to localStorage
-    const newWalk = {
-        date: new Date().toLocaleDateString(),
-        distance: totalDistance.toFixed(2),
-        time: walkTimeElement.innerText,
-        route: route
-    };
-
-    // Retrieve existing walks from localStorage or create a new array
-    let savedWalks = JSON.parse(localStorage.getItem('savedWalks')) || [];
-    savedWalks.push(newWalk); // Add the new walk
-
-    // Save updated walk list back to localStorage
-    localStorage.setItem('savedWalks', JSON.stringify(savedWalks));
-    localStorage.setItem('totalDistance', totalDistance.toFixed(2));  // Save the total distance (formatted to 2 decimal places)
-    localStorage.setItem('totalTime', walkTimeElement.innerText);  // Save the total time as a string (e.g., "00:45:30")
-    localStorage.setItem('walkRoute', JSON.stringify(route));  // Save the route as a JSON string
-
-    // Redirect to the end-walk.html page
-    window.location.href = 'end-walk.html';
+    const user = auth.currentUser; // Get the logged-in user
+    if (user) {
+        // Save walk details
+        const time = walkTimeElement.innerText;
+        saveWalkToFirestore(user.uid, totalDistance, time, route);
+    } else {
+        alert('Please log in to save your walk.');
+    }
 });
 
 // Error handling for geolocation
