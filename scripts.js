@@ -71,4 +71,65 @@ function updateWalkLocation(position) {
     const latLng = [position.coords.latitude, position.coords.longitude];
     route.push(latLng);
     polyline.setLatLngs(route); // Update the route on the map
-    map.setView(latLng, 15); //
+    map.setView(latLng, 15); // Center the map on the current location
+
+    if (previousPosition) {
+        const distance = calculateDistance(previousPosition, latLng);
+        totalDistance += distance;
+        walkDistanceElement.innerText = totalDistance.toFixed(2); // Update the distance in km
+    }
+
+    previousPosition = latLng; // Save the current position as the previous one for the next iteration
+}
+
+// Function to calculate the distance between two coordinates (Haversine formula)
+function calculateDistance(pos1, pos2) {
+    const R = 6371; // Radius of the Earth in kilometers
+    const lat1 = pos1[0], lon1 = pos1[1];
+    const lat2 = pos2[0], lon2 = pos2[1];
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    return distance;
+}
+
+// Convert degrees to radians
+function toRad(deg) {
+    return deg * Math.PI / 180;
+}
+
+// Function to stop tracking the walk and finalize the route
+endWalkBtn.addEventListener('click', () => {
+    isWalking = false;  // Stop the walking state
+    clearInterval(walkInterval);  // Stop the timer
+
+    // Save the walk details (distance, time, and route) to localStorage
+    localStorage.setItem('totalDistance', totalDistance.toFixed(2));  // Save the total distance (formatted to 2 decimal places)
+    localStorage.setItem('totalTime', walkTimeElement.innerText);  // Save the total time as a string (e.g., "00:45:30")
+    localStorage.setItem('walkRoute', JSON.stringify(route));  // Save the route as a JSON string
+
+    // Redirect to the end-walk.html page
+    window.location.href = 'end-walk.html';
+});
+
+// Error handling for geolocation
+function showError(error) {
+    switch (error.code) {
+        case error.PERMISSION_DENIED:
+            alert("User denied the request for Geolocation.");
+            break;
+        case error.POSITION_UNAVAILABLE:
+            alert("Location information is unavailable.");
+            break;
+        case error.TIMEOUT:
+            alert("The request to get user location timed out.");
+            break;
+        case error.UNKNOWN_ERROR:
+            alert("An unknown error occurred.");
+            break;
+    }
+}
