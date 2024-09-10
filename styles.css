@@ -1,3 +1,41 @@
+/* General Styling */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #ffe6f2;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+header {
+    background-color: #ff66b2;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
 /* Walk Type Container */
 .walk-type-container {
     text-align: center;
@@ -56,4 +94,25 @@
 
 .hidden {
     display: none;
+}
+
+/* Walk Summary */
+#walk-summary {
+    text-align: center;
+    margin: 20px;
+    font-size: 1.5em;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ff66b2;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 1.2em;
+}
+
+.button:hover {
+    background-color: #ff3385;
 }
