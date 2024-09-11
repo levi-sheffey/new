@@ -162,3 +162,11 @@ header {
 #close-auth:hover {
     color: #ff3385;
 }
+
+/* Image Under Walk Buttons (Sneakers Logo) */
+.walk-logo-image {
+    width: 25%; /* Resize to 25% of its parent container */
+    height: auto; /* Maintain aspect ratio */
+    margin-top: 20px;
+    border-radius: 10px;
+}
