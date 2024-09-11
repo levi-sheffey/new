@@ -172,6 +172,19 @@ header {
     color: #ff3385;
 }
 
+/* Align "Remember Me" checkbox */
+.remember-me-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 10px 0;
+    font-size: 0.9em; /* Adjust font size */
+}
+
+.remember-me-container input[type="checkbox"] {
+    margin-right: 5px; /* Space between checkbox and label */
+}
+
 /* Image Under Walk Buttons (Sneakers Logo) */
 .image-section {
     text-align: center;
