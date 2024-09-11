@@ -122,17 +122,19 @@ header {
     background-color: white;
     padding: 20px;
     border-radius: 10px;
-    width: 300px;
+    width: 90%;  /* Adjusted width for responsiveness */
+    max-width: 350px; /* Maximum width for the modal */
     text-align: center;
-    position: relative; /* Added for close button positioning */
+    position: relative;
 }
 
 #auth-container input {
-    width: 100%;
+    width: 100%;  /* Ensure inputs fit within the container */
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
+    box-sizing: border-box;  /* Ensures padding and border are part of the width */
 }
 
 #auth-submit-btn {
@@ -140,9 +142,10 @@ header {
     color: white;
     border: none;
     padding: 10px;
-    width: 100%;
+    width: 100%;  /* Ensure the submit button fits within the container */
     border-radius: 5px;
     cursor: pointer;
+    box-sizing: border-box;  /* Ensures padding and border are part of the width */
 }
 
 #auth-submit-btn:hover {
