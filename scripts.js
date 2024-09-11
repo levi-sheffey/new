@@ -1,5 +1,4 @@
 // Firebase SDKs are already initialized in index.html
-const auth = firebase.auth();
 const db = firebase.firestore();
 
 // Variables to track the walk state
