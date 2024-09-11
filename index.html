@@ -9,10 +9,13 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
-    <!-- Firebase SDKs (Firebase v8.x.x) -->
+    <!-- Firebase App (the core Firebase SDK) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <!-- Firebase Authentication -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <!-- Firebase Firestore -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <!-- Firebase Analytics -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
 
     <!-- Firebase Initialization -->
@@ -32,7 +35,6 @@
       firebase.initializeApp(firebaseConfig);
       firebase.analytics();
 
-      // Initialize Firebase Auth and Firestore
       const auth = firebase.auth();
       const db = firebase.firestore();
     </script>
@@ -97,6 +99,55 @@
     <!-- JavaScript Files -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="scripts.js"></script>
+
+    <script>
+      // Show modal based on action type
+      function showAuthModal(authType) {
+          document.getElementById('auth-modal').classList.add('show');
+          document.getElementById('auth-title').innerText = authType === 'login' ? 'Login' : 'Sign Up';
+          document.getElementById('auth-submit-btn').setAttribute('data-auth-type', authType);
+      }
+
+      // Close modal
+      function closeAuthModal() {
+          document.getElementById('auth-modal').classList.remove('show');
+      }
+
+      // Handle authentication action (login/signup)
+      function handleAuthAction() {
+          const authType = document.getElementById('auth-submit-btn').getAttribute('data-auth-type');
+          const email = document.getElementById('auth-email').value;
+          const password = document.getElementById('auth-password').value;
+
+          if (authType === 'signup') {
+              firebase.auth().createUserWithEmailAndPassword(email, password)
+                  .then((userCredential) => {
+                      alert('User signed up: ' + userCredential.user.email);
+                      closeAuthModal();
+                  })
+                  .catch((error) => {
+                      alert('Sign-up error: ' + error.message);
+                  });
+          } else if (authType === 'login') {
+              firebase.auth().signInWithEmailAndPassword(email, password)
+                  .then((userCredential) => {
+                      alert('Logged in: ' + userCredential.user.email);
+                      closeAuthModal();
+                  })
+                  .catch((error) => {
+                      alert('Login error: ' + error.message);
+                  });
+          }
+      }
+
+      // Event Listeners
+      document.addEventListener('DOMContentLoaded', () => {
+          document.getElementById('login-btn').addEventListener('click', () => showAuthModal('login'));
+          document.getElementById('signup-btn').addEventListener('click', () => showAuthModal('signup'));
+          document.getElementById('close-auth').addEventListener('click', closeAuthModal);
+          document.getElementById('auth-submit-btn').addEventListener('click', handleAuthAction);
+      });
+    </script>
 
 </body>
 </html>
