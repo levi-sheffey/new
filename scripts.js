@@ -1,5 +1,4 @@
-// Firebase SDKs are already initialized in index.html
-const db = firebase.firestore();
+// Firebase SDKs are initialized in index.html, so no need to redeclare db and auth
 
 // Variables to track the walk state
 let isWalking = false;
@@ -18,7 +17,7 @@ const walkTimeElement = document.getElementById('walk-time');
 // Map setup
 let map, polyline;
 
-// Function to initialize the map
+// Initialize the map
 function initializeMap() {
     map = L.map('map').setView([51.505, -0.09], 13); // Center map initially
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -64,7 +63,7 @@ function updateWalkTime() {
     walkTimeElement.innerText = `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
 }
 
-// Helper function to pad time values
+// Helper function to pad time values (e.g., "01", "09")
 function pad(value) {
     return String(value).padStart(2, '0');
 }
@@ -82,31 +81,37 @@ function updateWalkLocation(position) {
         walkDistanceElement.innerText = totalDistance.toFixed(2); // Update the distance in km
     }
 
-    previousPosition = latLng;
+    previousPosition = latLng; // Save the current position as the previous one for the next iteration
 }
 
-// Function to calculate distance (Haversine formula)
+// Function to calculate the distance between two coordinates (Haversine formula)
 function calculateDistance(pos1, pos2) {
-    const R = 6371;
-    const dLat = toRad(pos2[0] - pos1[0]);
-    const dLon = toRad(pos2[1] - pos1[1]);
-    const a = Math.sin(dLat / 2) ** 2 +
-        Math.cos(toRad(pos1[0])) * Math.cos(toRad(pos2[0])) *
-        Math.sin(dLon / 2) ** 2;
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const R = 6371; // Radius of the Earth in kilometers
+    const lat1 = pos1[0], lon1 = pos1[1];
+    const lat2 = pos2[0], lon2 = pos2[1];
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    return distance;
 }
 
+// Convert degrees to radians
 function toRad(deg) {
     return deg * Math.PI / 180;
 }
 
-// Function to stop tracking the walk and save to Firestore
+// Function to stop tracking the walk and finalize the route
 endWalkBtn.addEventListener('click', () => {
-    isWalking = false;
-    clearInterval(walkInterval);
+    isWalking = false;  // Stop the walking state
+    clearInterval(walkInterval);  // Stop the timer
 
-    const user = auth.currentUser;
+    const user = auth.currentUser; // Get the logged-in user
     if (user) {
+        // Save walk details to Firestore
         const time = walkTimeElement.innerText;
         saveWalkToFirestore(user.uid, totalDistance, time, route);
     } else {
