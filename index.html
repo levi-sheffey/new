@@ -22,7 +22,7 @@
     <script>
       // Your personalized Firebase configuration
       const firebaseConfig = {
-        apiKey: "AIzaSyDUs2rK53_zDUjHWYVc0OrcY46TOR0Z2P8",  // Your previously used API key
+        apiKey: "AIzaSyDUs2rK53_zDUjHWYVc0OrcY46TOR0Z2P8",
         authDomain: "hot-girl-walks-4b782.firebaseapp.com",
         projectId: "hot-girl-walks-4b782",
         storageBucket: "hot-girl-walks-4b782.appspot.com",
@@ -88,6 +88,7 @@
     <!-- Sign-Up and Login Forms (Hidden by default, shown when buttons are clicked) -->
     <div id="auth-modal" class="hidden">
         <div id="auth-container">
+            <!-- Close button for modal -->
             <span id="close-auth">&times;</span>
             <h2 id="auth-title">Login</h2>
             <input type="email" id="auth-email" placeholder="Email">
@@ -144,7 +145,7 @@
       document.addEventListener('DOMContentLoaded', () => {
           document.getElementById('login-btn').addEventListener('click', () => showAuthModal('login'));
           document.getElementById('signup-btn').addEventListener('click', () => showAuthModal('signup'));
-          document.getElementById('close-auth').addEventListener('click', closeAuthModal);
+          document.getElementById('close-auth').addEventListener('click', closeAuthModal);  // Event listener for the close (X) button
           document.getElementById('auth-submit-btn').addEventListener('click', handleAuthAction);
       });
     </script>
