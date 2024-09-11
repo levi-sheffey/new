@@ -9,14 +9,15 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs (CDN version for use with script tags) -->
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js"></script>
-    
-    <!-- Initialize Firebase -->
+
+    <!-- Firebase Initialization -->
     <script>
+      // Your personalized Firebase configuration
       const firebaseConfig = {
         apiKey: "AIzaSyDUs2rK53_zDUjHWYVc0OrcY46TOR0Z2P8",
         authDomain: "hot-girl-walks-4b782.firebaseapp.com",
@@ -30,6 +31,9 @@
       // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
       firebase.analytics();
+
+      const auth = firebase.auth();
+      const db = firebase.firestore();
     </script>
 </head>
 <body>
@@ -92,5 +96,6 @@
     <!-- JavaScript Files -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="scripts.js"></script>
+
 </body>
 </html>
