@@ -164,9 +164,15 @@ header {
 }
 
 /* Image Under Walk Buttons (Sneakers Logo) */
+.image-section {
+    text-align: center;
+    margin-top: 20px; /* Add margin to space it from the buttons */
+}
+
 .walk-logo-image {
+    display: block; /* Center the image */
     width: 25%; /* Resize to 25% of its parent container */
     height: auto; /* Maintain aspect ratio */
-    margin-top: 20px;
+    margin: 20px auto 0 auto; /* Center and add margin to the top */
     border-radius: 10px;
 }
