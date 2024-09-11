@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hot Girl Activities - Home</title>
-    
+
     <!-- Stylesheets -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -20,7 +20,6 @@
 
     <!-- Firebase Initialization -->
     <script>
-      // Your personalized Firebase configuration
       const firebaseConfig = {
         apiKey: "AIzaSyDUs2rK53_zDUjHWYVc0OrcY46TOR0Z2P8",
         authDomain: "hot-girl-walks-4b782.firebaseapp.com",
@@ -30,23 +29,18 @@
         appId: "1:971642614859:web:3f7ebb00b73a40b55a49ce",
         measurementId: "G-0JW2D3205F"
       };
-
-      // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
       firebase.analytics();
-
-      const auth = firebase.auth();
-      const db = firebase.firestore();
     </script>
 </head>
 <body>
 
-    <!-- Header Section with Logo and Auth Buttons -->
-    <header>
+    <!-- Header Section -->
+    <header class="header">
         <div class="header-left">
             <img src="assets/images/Hot-Girls-Walk-logo.webp" alt="Hot Girls Walk Logo" class="top-left-logo">
         </div>
-        <div class="header-left-buttons">
+        <div class="header-right">
             <button class="auth-btn" id="login-btn">Login</button>
             <button class="auth-btn" id="signup-btn">Sign Up</button>
         </div>
@@ -60,18 +54,20 @@
         </nav>
     </header>
 
-    <!-- Main Content Section with Walk Type Buttons -->
+    <!-- Main Content Section -->
     <main>
         <section class="walk-type-container">
             <h2>Choose Your Walk Type</h2>
-            <button class="walk-type-btn" id="solo-walk">Solo Walk</button>
-            <button class="walk-type-btn" id="group-walk">Group Walk</button>
-            <button class="walk-type-btn" id="ghost-walk">Ghost Walk</button>
+            <div class="button-group">
+                <button class="walk-type-btn" id="solo-walk">Solo Walk</button>
+                <button class="walk-type-btn" id="group-walk">Group Walk</button>
+                <button class="walk-type-btn" id="ghost-walk">Ghost Walk</button>
+            </div>
         </section>
 
         <!-- Map and Walk Info -->
         <section id="walk-info" class="hidden">
-            <div id="map"></div>
+            <div id="map" class="map-container"></div>
             <div id="walk-details">
                 <p>Distance: <span id="walk-distance">0.00</span> km</p>
                 <p>Time: <span id="walk-time">00:00:00</span></p>
@@ -79,13 +75,13 @@
             </div>
         </section>
 
-        <!-- Image Under Walk Buttons (Sneakers Logo) -->
-        <section class="image-section">
+        <!-- Footer Section with Image -->
+        <footer class="image-section">
             <img src="assets/images/Sneakers-Logo.webp" alt="Hot Girl Walks Sneakers Logo" class="walk-logo-image">
-        </section>
+        </footer>
     </main>
 
-    <!-- Sign-Up and Login Forms (Hidden by default, shown when buttons are clicked) -->
+    <!-- Authentication Modal -->
     <div id="auth-modal" class="hidden">
         <div id="auth-container">
             <span id="close-auth">&times;</span>
@@ -148,6 +144,5 @@
           document.getElementById('auth-submit-btn').addEventListener('click', handleAuthAction);
       });
     </script>
-
 </body>
 </html>
