@@ -14,10 +14,15 @@ const walkInfoSection = document.getElementById('walk-info');
 const walkDistanceElement = document.getElementById('walk-distance');
 const walkTimeElement = document.getElementById('walk-time');
 
+// Redirect to the new solo walk page
+soloWalkBtn.addEventListener('click', () => {
+    window.location.href = 'solo-walk.html'; // Redirects to solo-walk.html
+});
+
 // Map setup
 let map, polyline;
 
-// Initialize the map
+// Initialize the map (this will go into solo-walk.html page)
 function initializeMap() {
     map = L.map('map').setView([51.505, -0.09], 13); // Center map initially
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -25,13 +30,6 @@ function initializeMap() {
     }).addTo(map);
     polyline = L.polyline([], { color: '#ff66b2' }).addTo(map); // Initialize an empty polyline
 }
-
-// Function to start the solo walk
-soloWalkBtn.addEventListener('click', () => {
-    if (!map) initializeMap(); // Initialize the map if it hasn't been already
-    walkInfoSection.classList.remove('hidden'); // Show map and walk details
-    startWalk();
-});
 
 // Function to start tracking the walk
 function startWalk() {
