@@ -93,6 +93,13 @@
             <h2 id="auth-title">Login</h2>
             <input type="email" id="auth-email" placeholder="Email">
             <input type="password" id="auth-password" placeholder="Password">
+
+            <!-- Remember Me Checkbox -->
+            <div style="text-align: left; margin: 10px 0;">
+                <input type="checkbox" id="remember-me">
+                <label for="remember-me">Remember me</label>
+            </div>
+
             <button id="auth-submit-btn" data-auth-type="login">Submit</button>
         </div>
     </div>
@@ -119,27 +126,44 @@
           const authType = document.getElementById('auth-submit-btn').getAttribute('data-auth-type');
           const email = document.getElementById('auth-email').value;
           const password = document.getElementById('auth-password').value;
+          const rememberMeChecked = document.getElementById('remember-me').checked;
 
-          if (authType === 'signup') {
-              firebase.auth().createUserWithEmailAndPassword(email, password)
-                  .then((userCredential) => {
-                      alert('Thank you for signing up: ' + userCredential.user.email);
-                      closeAuthModal();
-                  })
-                  .catch((error) => {
-                      alert('Sign-up error: ' + error.message);
-                  });
-          } else if (authType === 'login') {
-              firebase.auth().signInWithEmailAndPassword(email, password)
-                  .then((userCredential) => {
-                      alert('Login successful: ' + userCredential.user.email);
-                      closeAuthModal();
-                  })
-                  .catch((error) => {
-                      alert('Login error: ' + error.message);
-                  });
-          }
+          // Set Firebase persistence based on the "Remember Me" checkbox
+          const persistenceType = rememberMeChecked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
+
+          firebase.auth().setPersistence(persistenceType)
+            .then(() => {
+                if (authType === 'signup') {
+                    return firebase.auth().createUserWithEmailAndPassword(email, password)
+                        .then((userCredential) => {
+                            alert('Thank you for signing up: ' + userCredential.user.email);
+                            closeAuthModal();
+                        })
+                        .catch((error) => {
+                            alert('Sign-up error: ' + error.message);
+                        });
+                } else if (authType === 'login') {
+                    return firebase.auth().signInWithEmailAndPassword(email, password)
+                        .then((userCredential) => {
+                            alert('Login successful: ' + userCredential.user.email);
+                            closeAuthModal();
+                        })
+                        .catch((error) => {
+                            alert('Login error: ' + error.message);
+                        });
+                }
+            })
+            .catch((error) => {
+                alert('Persistence error: ' + error.message);
+            });
       }
+
+      // Check if user is already logged in and auto-login
+      firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+              console.log('User already logged in: ', user.email);
+          }
+      });
 
       // Event Listeners
       document.addEventListener('DOMContentLoaded', () => {
