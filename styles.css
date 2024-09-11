@@ -141,16 +141,21 @@ header {
     background-color: #ff66b2;
     color: white;
     border: none;
-    padding: 10px;
+    padding: 12px 0; /* Padding for a taller button */
     width: 80%;  /* Adjusted width for space around the button */
     margin: 20px auto 0 auto;  /* Center the submit button with margin */
-    border-radius: 5px;
+    border-radius: 30px; /* Rounded button edges */
     cursor: pointer;
     box-sizing: border-box;  /* Ensures padding and border are part of the width */
+    font-size: 1.2em; /* Slightly increase font size */
+    font-weight: bold; /* Bold font for prominence */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    transition: all 0.3s ease; /* Smooth hover transition */
 }
 
 #auth-submit-btn:hover {
     background-color: #ff3385;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Deepen shadow on hover */
 }
 
 /* Close Button for Authentication Modal */
