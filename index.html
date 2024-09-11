@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hot Girl Activities - Home</title>
-
+    
     <!-- Stylesheets -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -20,27 +20,33 @@
 
     <!-- Firebase Initialization -->
     <script>
+      // Your personalized Firebase configuration
       const firebaseConfig = {
-        apiKey: "AIzaSyDUs2rK53_zDUjHWYVc0OrcY46TOR0Z2P8",
-        authDomain: "hot-girl-walks-4b782.firebaseapp.com",
-        projectId: "hot-girl-walks-4b782",
-        storageBucket: "hot-girl-walks-4b782.appspot.com",
-        messagingSenderId: "971642614859",
-        appId: "1:971642614859:web:3f7ebb00b73a40b55a49ce",
-        measurementId: "G-0JW2D3205F"
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID",
+        measurementId: "YOUR_MEASUREMENT_ID"
       };
+
+      // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
       firebase.analytics();
+
+      const auth = firebase.auth();
+      const db = firebase.firestore();
     </script>
 </head>
 <body>
 
-    <!-- Header Section -->
-    <header class="header">
+    <!-- Header Section with Logo and Auth Buttons -->
+    <header>
         <div class="header-left">
             <img src="assets/images/Hot-Girls-Walk-logo.webp" alt="Hot Girls Walk Logo" class="top-left-logo">
         </div>
-        <div class="header-right">
+        <div class="header-left-buttons">
             <button class="auth-btn" id="login-btn">Login</button>
             <button class="auth-btn" id="signup-btn">Sign Up</button>
         </div>
@@ -54,20 +60,18 @@
         </nav>
     </header>
 
-    <!-- Main Content Section -->
+    <!-- Main Content Section with Walk Type Buttons -->
     <main>
         <section class="walk-type-container">
             <h2>Choose Your Walk Type</h2>
-            <div class="button-group">
-                <button class="walk-type-btn" id="solo-walk">Solo Walk</button>
-                <button class="walk-type-btn" id="group-walk">Group Walk</button>
-                <button class="walk-type-btn" id="ghost-walk">Ghost Walk</button>
-            </div>
+            <button class="walk-type-btn" id="solo-walk">Solo Walk</button>
+            <button class="walk-type-btn" id="group-walk">Group Walk</button>
+            <button class="walk-type-btn" id="ghost-walk">Ghost Walk</button>
         </section>
 
         <!-- Map and Walk Info -->
         <section id="walk-info" class="hidden">
-            <div id="map" class="map-container"></div>
+            <div id="map"></div>
             <div id="walk-details">
                 <p>Distance: <span id="walk-distance">0.00</span> km</p>
                 <p>Time: <span id="walk-time">00:00:00</span></p>
@@ -75,13 +79,13 @@
             </div>
         </section>
 
-        <!-- Footer Section with Image -->
-        <footer class="image-section">
+        <!-- Image Under Walk Buttons (Sneakers Logo) -->
+        <section class="image-section">
             <img src="assets/images/Sneakers-Logo.webp" alt="Hot Girl Walks Sneakers Logo" class="walk-logo-image">
-        </footer>
+        </section>
     </main>
 
-    <!-- Authentication Modal -->
+    <!-- Sign-Up and Login Forms (Hidden by default, shown when buttons are clicked) -->
     <div id="auth-modal" class="hidden">
         <div id="auth-container">
             <span id="close-auth">&times;</span>
@@ -90,6 +94,11 @@
             <input type="password" id="auth-password" placeholder="Password">
             <button id="auth-submit-btn" data-auth-type="login">Submit</button>
         </div>
+    </div>
+
+    <!-- Pop-up notification for login/signup -->
+    <div id="popup-message" class="hidden">
+        <span id="popup-content"></span>
     </div>
 
     <!-- JavaScript Files -->
@@ -109,6 +118,17 @@
           document.getElementById('auth-modal').classList.remove('show');
       }
 
+      // Function to show popup messages
+      function showPopupMessage(message) {
+          const popup = document.getElementById('popup-message');
+          const popupContent = document.getElementById('popup-content');
+          popupContent.innerText = message;
+          popup.classList.remove('hidden');
+          setTimeout(() => {
+              popup.classList.add('hidden');
+          }, 3000);
+      }
+
       // Handle authentication action (login/signup)
       function handleAuthAction() {
           const authType = document.getElementById('auth-submit-btn').getAttribute('data-auth-type');
@@ -118,7 +138,7 @@
           if (authType === 'signup') {
               firebase.auth().createUserWithEmailAndPassword(email, password)
                   .then((userCredential) => {
-                      alert('User signed up: ' + userCredential.user.email);
+                      showPopupMessage('Thank you for signing up!');
                       closeAuthModal();
                   })
                   .catch((error) => {
@@ -127,7 +147,7 @@
           } else if (authType === 'login') {
               firebase.auth().signInWithEmailAndPassword(email, password)
                   .then((userCredential) => {
-                      alert('Logged in: ' + userCredential.user.email);
+                      showPopupMessage('Login successful!');
                       closeAuthModal();
                   })
                   .catch((error) => {
@@ -144,5 +164,6 @@
           document.getElementById('auth-submit-btn').addEventListener('click', handleAuthAction);
       });
     </script>
+
 </body>
 </html>
