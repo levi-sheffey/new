@@ -123,15 +123,15 @@ header {
     padding: 20px;
     border-radius: 10px;
     width: 90%;  /* Adjusted width for responsiveness */
-    max-width: 350px; /* Maximum width for the modal */
+    max-width: 400px; /* Maximum width for the modal */
     text-align: center;
     position: relative;
 }
 
 #auth-container input {
-    width: 100%;  /* Ensure inputs fit within the container */
+    width: 80%;  /* Adjust width to make space for centering */
     padding: 10px;
-    margin: 10px 0;
+    margin: 10px auto;  /* Center the input fields */
     border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;  /* Ensures padding and border are part of the width */
@@ -142,7 +142,8 @@ header {
     color: white;
     border: none;
     padding: 10px;
-    width: 100%;  /* Ensure the submit button fits within the container */
+    width: 80%;  /* Adjusted width for space around the button */
+    margin: 20px auto 0 auto;  /* Center the submit button with margin */
     border-radius: 5px;
     cursor: pointer;
     box-sizing: border-box;  /* Ensures padding and border are part of the width */
