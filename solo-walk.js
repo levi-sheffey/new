@@ -1,4 +1,7 @@
-// Solo Walk Script for tracking, ending walk, and screenshot capture
+// Firebase setup for authentication and storage
+const storage = firebase.storage();
+const auth = firebase.auth();
+const db = firebase.firestore();
 
 let isWalking = false;
 let startTime, walkInterval;
@@ -12,6 +15,7 @@ const walkTimeElement = document.getElementById('walk-time');
 const endWalkBtn = document.getElementById('end-walk-btn');
 const walkDetailsSection = document.getElementById('walk-details');
 const pageTitle = document.getElementById('page-title'); // Title reference
+const screenshotElement = document.getElementById('screenshot');
 
 // Countdown before starting the walk
 let countdownNumber = 3;
@@ -125,42 +129,48 @@ endWalkBtn.addEventListener('click', () => {
     endWalkBtn.style.display = 'none';
     walkDetailsSection.style.display = 'block';
 
-    // Refresh the map and capture screenshot after delay
-    setTimeout(() => {
-        map.invalidateSize(true);
-        captureScreenshot();  // Screenshot capture after refresh
-    }, 1000);
+    // Capture screenshot using html2canvas
+    html2canvas(document.getElementById('map')).then(canvas => {
+        const screenshotDataUrl = canvas.toDataURL('image/png');
+        screenshotElement.src = screenshotDataUrl;
+        screenshotElement.style.display = 'block'; // Show screenshot
+
+        const user = auth.currentUser; // Get the logged-in user
+        if (user) {
+            const time = walkTimeElement.innerText;
+            saveWalkToFirestore(user.uid, totalDistance, time, screenshotDataUrl);
+        } else {
+            alert('Please log in to save your walk.');
+        }
+    });
 });
 
-// Function to capture the screenshot
-function captureScreenshot() {
-    html2canvas(document.body).then(canvas => {
-        const screenshotDataUrl = canvas.toDataURL('image/png');
-        console.log("Screenshot captured!");
-        
-        // Display captured image (for testing)
-        const imgElement = document.createElement('img');
-        imgElement.src = screenshotDataUrl;
-        document.body.appendChild(imgElement);
-        
-        saveScreenshotToFirestore(screenshotDataUrl);
-    });
-}
+// Function to save walk data and screenshot to Firestore
+function saveWalkToFirestore(userId, distance, time, screenshot) {
+    const storageRef = storage.ref();
+    const screenshotRef = storageRef.child(`screenshots/${userId}_${Date.now()}.png`);
 
-// Save the screenshot to Firestore (optional)
-function saveScreenshotToFirestore(imageDataUrl) {
-    const user = auth.currentUser;
-    if (user) {
-        db.collection('walks').add({
-            userId: user.uid,
-            image: imageDataUrl,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(() => {
-            console.log("Screenshot saved to Firestore");
-        }).catch(error => {
-            console.error("Error saving screenshot: ", error);
+    // Upload the screenshot to Firebase Storage
+    fetch(screenshot)
+        .then(res => res.blob())
+        .then(blob => {
+            return screenshotRef.put(blob); // Upload the screenshot blob
+        })
+        .then(snapshot => {
+            return screenshotRef.getDownloadURL(); // Get the download URL of the uploaded screenshot
+        })
+        .then(downloadURL => {
+            // Save the walk data and screenshot URL to Firestore
+            db.collection('walks').add({
+                userId: userId,
+                distance: distance,
+                time: time,
+                screenshotUrl: downloadURL,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            }).then(() => {
+                console.log("Walk data and screenshot saved successfully!");
+            }).catch(error => {
+                console.error("Error saving walk to Firestore: ", error);
+            });
         });
-    } else {
-        console.log("User not logged in, cannot save screenshot");
-    }
 }
