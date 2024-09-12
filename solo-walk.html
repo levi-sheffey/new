@@ -34,6 +34,25 @@
             margin-top: 20px;
             display: none; /* Hide map initially */
         }
+        #end-walk-btn {
+            display: none; /* Hidden initially */
+            background-color: #ff66b2;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        #end-walk-btn:hover {
+            background-color: #ff3385;
+        }
+        #walk-details {
+            margin-top: 20px;
+            font-size: 1.1em;
+            display: none; /* Hidden initially */
+        }
     </style>
 </head>
 <body>
@@ -42,11 +61,29 @@
     <p id="countdown">3</p> <!-- Countdown timer -->
 
     <div id="map"></div> <!-- Map container -->
+    <button id="end-walk-btn">End Walk</button> <!-- End Walk button -->
+
+    <!-- Walk details after ending the walk -->
+    <div id="walk-details">
+        <p>Total Distance: <span id="walk-distance">0.00</span> km</p>
+        <p>Total Time: <span id="walk-time">00:00:00</span></p>
+    </div>
 
     <script>
+        let isWalking = false;
+        let startTime, walkInterval;
+        let totalDistance = 0;
+        let previousPosition = null;
+        let route = [];
+
+        const countdownElement = document.getElementById('countdown');
+        const walkDistanceElement = document.getElementById('walk-distance');
+        const walkTimeElement = document.getElementById('walk-time');
+        const endWalkBtn = document.getElementById('end-walk-btn');
+        const walkDetailsSection = document.getElementById('walk-details');
+
         // Countdown before starting the walk
         let countdownNumber = 3;
-        const countdownElement = document.getElementById('countdown');
 
         const countdownInterval = setInterval(() => {
             countdownNumber--;
@@ -55,6 +92,7 @@
                 clearInterval(countdownInterval);
                 countdownElement.style.display = 'none'; // Hide countdown text
                 document.getElementById('map').style.display = 'block'; // Show the map
+                endWalkBtn.style.display = 'inline-block'; // Show the End Walk button
 
                 // Initialize the map and start tracking the walk
                 initializeMapAndStartTracking();
@@ -70,7 +108,9 @@
 
             const routePolyline = L.polyline([], { color: '#ff66b2' }).addTo(map); // Initialize route
 
-            let previousPosition = null;
+            isWalking = true;
+            startTime = Date.now();
+            walkInterval = setInterval(updateWalkTime, 1000);
 
             // Start tracking location
             if (navigator.geolocation) {
@@ -84,7 +124,8 @@
                     // Calculate distance if there's a previous position
                     if (previousPosition) {
                         const distance = calculateDistance(previousPosition, latLng);
-                        console.log("Distance covered:", distance, "km");
+                        totalDistance += distance;
+                        walkDistanceElement.innerText = totalDistance.toFixed(2); // Update distance in km
                     }
 
                     previousPosition = latLng;
@@ -92,6 +133,36 @@
             } else {
                 alert("Geolocation is not supported by your browser.");
             }
+        }
+
+        // Function to update the walk time
+        function updateWalkTime() {
+            const elapsedTime = Date.now() - startTime;
+            const seconds = Math.floor(elapsedTime / 1000);
+            const hrs = Math.floor(seconds / 3600);
+            const mins = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+
+            walkTimeElement.innerText = `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
+        }
+
+        // Helper function to pad time values (e.g., "01", "09")
+        function pad(value) {
+            return String(value).padStart(2, '0');
+        }
+
+        // Function to calculate the distance between two coordinates (Haversine formula)
+        function calculateDistance(pos1, pos2) {
+            const R = 6371; // Radius of the Earth in kilometers
+            const lat1 = pos1[0], lon1 = pos1[1];
+            const lat2 = pos2[0], lon2 = pos2[1];
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
         }
 
         // Handle geolocation errors
@@ -112,19 +183,16 @@
             }
         }
 
-        // Function to calculate distance between two coordinates (Haversine formula)
-        function calculateDistance(pos1, pos2) {
-            const R = 6371; // Radius of the Earth in kilometers
-            const lat1 = pos1[0], lon1 = pos1[1];
-            const lat2 = pos2[0], lon2 = pos2[1];
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return R * c;
-        }
+        // End walk functionality
+        endWalkBtn.addEventListener('click', () => {
+            isWalking = false;
+            clearInterval(walkInterval);
+
+            // Show walk details and hide the map and end button
+            document.getElementById('map').style.display = 'none';
+            endWalkBtn.style.display = 'none';
+            walkDetailsSection.style.display = 'block';
+        });
     </script>
 
 </body>
