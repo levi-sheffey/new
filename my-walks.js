@@ -1,147 +1,103 @@
-// Retrieve saved walks from localStorage
-let savedWalks = JSON.parse(localStorage.getItem('savedWalks')) || [];
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Walks</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
 
-// DOM Elements
-const walkList = document.getElementById('walk-list');
-const searchWalksInput = document.getElementById('search-walks');
-const walkComparison = document.getElementById('walk-comparison');
-const compareResults = document.getElementById('compare-results');
-const closeComparisonBtn = document.getElementById('close-comparison');
+    <!-- Header Section -->
+    <header>
+        <h1>My Walks</h1>
+    </header>
 
-// Display the list of walks
-function displayWalks(walks) {
-    walkList.innerHTML = ''; // Clear the existing list
+    <!-- Home Button -->
+    <div id="home-button-container">
+        <a href="index.html" class="home-button">Go to Home</a>
+    </div>
 
-    walks.forEach((walk, index) => {
-        // Create the walk item element
-        const walkItem = document.createElement('div');
-        walkItem.classList.add('walk-item');
+    <main>
+        <!-- Search/Filter Section -->
+        <section id="search-filter">
+            <input type="text" id="search-walks" placeholder="Search walks by date, distance, or time">
+        </section>
 
-        walkItem.innerHTML = `
-            <div>
-                <h3>Walk on ${walk.date}</h3>
-                <p>Distance: ${walk.distance} km</p>
-                <p>Time: ${walk.time}</p>
+        <!-- List of Walks -->
+        <section id="walk-list">
+            <!-- Walks will be dynamically added here -->
+        </section>
+
+        <!-- Comparison Section -->
+        <section id="walk-comparison" class="hidden">
+            <h2>Compare Walks</h2>
+            <div id="compare-results">
+                <!-- Comparison details will be dynamically added here -->
             </div>
-            <div class="walk-actions">
-                <button class="view-walk-btn" data-index="${index}">View Route</button>
-                <button class="compare-walk-btn" data-index="${index}">Compare</button>
-                <button class="delete-walk-btn" data-index="${index}">Delete</button>
-            </div>
-        `;
+            <button id="close-comparison">Close Comparison</button>
+        </section>
 
-        walkList.appendChild(walkItem);
-    });
+    </main>
 
-    // Attach event listeners to the buttons
-    attachEventListeners();
-}
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-// Attach event listeners to the buttons (view, compare, delete)
-function attachEventListeners() {
-    document.querySelectorAll('.view-walk-btn').forEach(button => {
-        button.addEventListener('click', viewWalkRoute);
-    });
+    <script>
+        const walksContainer = document.getElementById('walk-list');
+        const searchWalks = document.getElementById('search-walks');
 
-    document.querySelectorAll('.compare-walk-btn').forEach(button => {
-        button.addEventListener('click', addToComparison);
-    });
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                // Fetch and display walks from Firestore
+                db.collection('walks').where('userId', '==', user.uid).orderBy('timestamp', 'desc')
+                .get().then(querySnapshot => {
+                    querySnapshot.forEach(doc => {
+                        const walk = doc.data();
+                        const walkElement = createWalkElement(walk);
+                        walksContainer.appendChild(walkElement);
+                    });
+                }).catch(error => {
+                    console.error("Error retrieving walks: ", error);
+                });
+            } else {
+                alert('Please log in to view your walks.');
+            }
+        });
 
-    document.querySelectorAll('.delete-walk-btn').forEach(button => {
-        button.addEventListener('click', deleteWalk);
-    });
-}
+        function createWalkElement(walk) {
+            const walkElement = document.createElement('div');
+            walkElement.className = 'walk-entry';
 
-// View walk route on the map
-function viewWalkRoute(event) {
-    const walkIndex = event.target.getAttribute('data-index');
-    const walk = savedWalks[walkIndex];
+            // Convert Firestore timestamp to Date
+            const walkDate = new Date(walk.timestamp.seconds * 1000).toLocaleString();
 
-    // Check if a map already exists, if so, remove it
-    const mapContainer = document.getElementById('map');
-    if (mapContainer) {
-        mapContainer.remove();  // Remove the old map container
-    }
+            // Walk details template
+            walkElement.innerHTML = `
+                <h3>Walk on ${walkDate}</h3>
+                <p>Total Distance: ${walk.distance} km</p>
+                <p>Total Time: ${walk.time}</p>
+                <img src="${walk.screenshot}" alt="Walked Route" style="width:100%;max-width:400px;border-radius:10px;">
+            `;
 
-    // Create a new map container
-    const newMap = document.createElement('div');
-    newMap.id = 'map';
-    newMap.style.height = '400px';
-    walkList.appendChild(newMap);
+            return walkElement;
+        }
 
-    // Initialize and show map with the walk route
-    const map = L.map('map').setView(walk.route[0], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-    }).addTo(map);
-    L.polyline(walk.route, { color: '#ff66b2' }).addTo(map);
-}
+        // Search functionality
+        searchWalks.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const walks = document.querySelectorAll('.walk-entry');
 
-// Add walk to comparison
-let compareList = [];
+            walks.forEach(walk => {
+                const text = walk.innerText.toLowerCase();
+                walk.style.display = text.includes(query) ? '' : 'none';
+            });
+        });
+    </script>
 
-function addToComparison(event) {
-    const walkIndex = event.target.getAttribute('data-index');
-    const walk = savedWalks[walkIndex];
-
-    compareList.push(walk);
-
-    // If two or more walks are selected, display the comparison
-    if (compareList.length >= 2) {
-        displayComparison();
-    }
-}
-
-// Display comparison between walks
-function displayComparison() {
-    walkComparison.classList.remove('hidden'); // Show comparison section
-    compareResults.innerHTML = ''; // Clear previous comparison
-
-    compareList.forEach(walk => {
-        const comparisonItem = document.createElement('div');
-        comparisonItem.classList.add('comparison-item');
-
-        comparisonItem.innerHTML = `
-            <h3>Walk on ${walk.date}</h3>
-            <p>Distance: ${walk.distance} km</p>
-            <p>Time: ${walk.time}</p>
-        `;
-
-        compareResults.appendChild(comparisonItem);
-    });
-
-    // Clear comparison list after displaying
-    compareList = [];
-}
-
-// Delete a walk
-function deleteWalk(event) {
-    const walkIndex = event.target.getAttribute('data-index');
-    savedWalks.splice(walkIndex, 1); // Remove the walk from the array
-
-    // Save the updated list back to localStorage
-    localStorage.setItem('savedWalks', JSON.stringify(savedWalks));
-
-    // Re-display the updated list
-    displayWalks(savedWalks);
-}
-
-// Search/filter walks based on the search input
-searchWalksInput.addEventListener('input', function () {
-    const searchQuery = searchWalksInput.value.toLowerCase();
-    const filteredWalks = savedWalks.filter(walk => {
-        return walk.date.toLowerCase().includes(searchQuery) ||
-               walk.distance.toString().includes(searchQuery) ||
-               walk.time.toLowerCase().includes(searchQuery);
-    });
-
-    displayWalks(filteredWalks);
-});
-
-// Close comparison section
-closeComparisonBtn.addEventListener('click', function () {
-    walkComparison.classList.add('hidden');
-});
-
-// Initial display of saved walks
-displayWalks(savedWalks);
+</body>
+</html>
