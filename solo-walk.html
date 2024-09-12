@@ -57,7 +57,7 @@
 </head>
 <body>
 
-    <h1>Get Ready for Your Solo Walk</h1>
+    <h1 id="page-title">Get Ready for Your Solo Walk</h1> <!-- Title -->
     <p id="countdown">3</p> <!-- Countdown timer -->
 
     <div id="map"></div> <!-- Map container -->
@@ -81,6 +81,7 @@
         const walkTimeElement = document.getElementById('walk-time');
         const endWalkBtn = document.getElementById('end-walk-btn');
         const walkDetailsSection = document.getElementById('walk-details');
+        const pageTitle = document.getElementById('page-title'); // Title reference
 
         // Countdown before starting the walk
         let countdownNumber = 3;
@@ -93,6 +94,7 @@
                 countdownElement.style.display = 'none'; // Hide countdown text
                 document.getElementById('map').style.display = 'block'; // Show the map
                 endWalkBtn.style.display = 'inline-block'; // Show the End Walk button
+                pageTitle.textContent = "HOT GIRLS WALK"; // Change the page title
 
                 // Initialize the map and start tracking the walk
                 initializeMapAndStartTracking();
