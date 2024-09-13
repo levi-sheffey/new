@@ -69,6 +69,9 @@ function initializeMapAndStartTracking() {
     } else {
         alert("Geolocation is not supported by your browser.");
     }
+
+    // Store map instance for later use
+    window.mapInstance = map;
 }
 
 // Function to update the walk time
@@ -129,8 +132,12 @@ endWalkBtn.addEventListener('click', () => {
     endWalkBtn.style.display = 'none';
     walkDetailsSection.style.display = 'block';
 
-    // Capture screenshot using html2canvas
-    html2canvas(document.getElementById('map')).then(canvas => {
+    // Capture the map using Leaflet Image Export (leaflet-image.js)
+    leafletImage(window.mapInstance, function(err, canvas) {
+        if (err) {
+            console.error("Error capturing map image:", err);
+            return;
+        }
         const screenshotDataUrl = canvas.toDataURL('image/png');
         screenshotElement.src = screenshotDataUrl;
         screenshotElement.style.display = 'block'; // Show screenshot
@@ -150,11 +157,11 @@ function saveWalkToFirestore(userId, distance, time, screenshot) {
     const storageRef = storage.ref();
     const screenshotRef = storageRef.child(`screenshots/${userId}_${Date.now()}.png`);
 
-    // Upload the screenshot to Firebase Storage
+    // Convert data URL to Blob for upload
     fetch(screenshot)
         .then(res => res.blob())
         .then(blob => {
-            return screenshotRef.put(blob); // Upload the screenshot blob
+            return screenshotRef.put(blob); // Upload the screenshot blob to Firebase Storage
         })
         .then(snapshot => {
             return screenshotRef.getDownloadURL(); // Get the download URL of the uploaded screenshot
