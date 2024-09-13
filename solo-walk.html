@@ -13,9 +13,11 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script> <!-- Firebase Storage -->
+    
+    <!-- Leaflet and Screenshot Libraries -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script> <!-- For screenshot -->
+    <script src="https://unpkg.com/leaflet-image/leaflet-image.js"></script> <!-- Leaflet Image Export -->
 
     <style>
         body {
@@ -70,6 +72,11 @@
     </div>
 
     <script>
+        // Firebase setup for authentication and storage
+        const storage = firebase.storage();
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
         let isWalking = false;
         let startTime, walkInterval;
         let totalDistance = 0;
@@ -136,6 +143,9 @@
             } else {
                 alert("Geolocation is not supported by your browser.");
             }
+
+            // Store map instance for later use
+            window.mapInstance = map;
         }
 
         // Function to update the walk time
@@ -196,8 +206,13 @@
             endWalkBtn.style.display = 'none';
             walkDetailsSection.style.display = 'block';
 
-            // Capture map screenshot using html2canvas
-            html2canvas(document.getElementById('map')).then(canvas => {
+            // Capture map screenshot using leaflet-image
+            leafletImage(window.mapInstance, function(err, canvas) {
+                if (err) {
+                    console.error("Error capturing map image:", err);
+                    return;
+                }
+
                 const screenshotDataUrl = canvas.toDataURL('image/png');
                 screenshotElement.src = screenshotDataUrl;
                 screenshotElement.style.display = 'block'; // Show screenshot
@@ -212,23 +227,36 @@
             });
         });
 
-        // Function to save walk to Firestore
+        // Function to save walk data and screenshot to Firestore
         function saveWalkToFirestore(userId, distance, time, screenshot) {
-            db.collection('walks').add({
-                userId: userId,
-                distance: distance,
-                time: time,
-                screenshot: screenshot, // Save the screenshot as a data URL
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                alert('Walk saved successfully!');
-            }).catch((error) => {
-                console.error('Error saving walk: ', error);
-            });
+            const storageRef = storage.ref();
+            const screenshotRef = storageRef.child(`screenshots/${userId}_${Date.now()}.png`);
+
+            // Convert data URL to Blob for upload
+            fetch(screenshot)
+                .then(res => res.blob())
+                .then(blob => {
+                    return screenshotRef.put(blob); // Upload the screenshot blob to Firebase Storage
+                })
+                .then(snapshot => {
+                    return screenshotRef.getDownloadURL(); // Get the download URL of the uploaded screenshot
+                })
+                .then(downloadURL => {
+                    // Save the walk data and screenshot URL to Firestore
+                    db.collection('walks').add({
+                        userId: userId,
+                        distance: distance,
+                        time: time,
+                        screenshotUrl: downloadURL,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    }).then(() => {
+                        console.log("Walk data and screenshot saved successfully!");
+                    }).catch(error => {
+                        console.error("Error saving walk to Firestore: ", error);
+                    });
+                });
         }
     </script>
 
-<script src="solo-walk.js"></script>
 </body>
 </html>
-
