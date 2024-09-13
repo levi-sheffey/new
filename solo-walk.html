@@ -72,7 +72,20 @@
     </div>
 
     <script>
-        // Firebase setup for authentication and storage
+        // Firebase setup
+        const firebaseConfig = {
+            apiKey: "AIzaSyDUs2rK53_zDUjHWYVc0OrcY46TOR0Z2P8",
+            authDomain: "hot-girl-walks-4b782.firebaseapp.com",
+            projectId: "hot-girl-walks-4b782",
+            storageBucket: "hot-girl-walks-4b782.appspot.com",
+            messagingSenderId: "971642614859",
+            appId: "1:971642614859:web:3f7ebb00b73a40b55a49ce",
+            measurementId: "G-0JW2D3205F"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
         const storage = firebase.storage();
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -260,7 +273,6 @@
 
 <script src="https://unpkg.com/leaflet-image/leaflet-image.js"></script>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-image/leaflet-image.js"></script>
 
 </body>
 </html>
